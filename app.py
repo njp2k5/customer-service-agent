@@ -1,16 +1,28 @@
 import streamlit as st
-from auth.login import login_page
 
-def main():
-    st.set_page_config(page_title="Multiagent Support System", layout="wide")
-    
-    if "authenticated" not in st.session_state:
-        st.session_state["authenticated"] = False
+st.set_page_config(page_title="Debug Mode", layout="centered")
 
-    if not st.session_state["authenticated"]:
-        login_page()
-    else:
-        st.switch_page("pages/1_Chat_Interface.py")
+st.title("🧪 Debugging App Startup")
 
-if __name__ == "__main__":
-    main()
+try:
+    st.write("Trying to import login module...")
+    from auth.login import login_page
+    st.success("✅ auth.login imported successfully")
+
+    st.write("Trying to import classifier...")
+    from router.classifier import classify_query
+    st.success("✅ router.classifier imported successfully")
+
+    st.write("Trying to import joblib and others...")
+    import joblib
+    import openai
+    import os
+    st.success("✅ All core modules imported")
+
+    st.write("Trying to read secrets...")
+    st.code(f"OPENAI_API_KEY = {st.secrets['OPENAI_API_KEY'][:5]}...")
+    st.success("✅ Secrets loaded")
+
+except Exception as e:
+    st.error("❌ App crashed at startup")
+    st.exception(e)
