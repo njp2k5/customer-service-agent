@@ -1,28 +1,31 @@
 import streamlit as st
 
-st.set_page_config(page_title="Debug Mode", layout="centered")
+st.set_page_config(page_title="Debug Boot", layout="centered")
+st.title("🔎 Streamlit Startup Debug")
 
-st.title("🧪 Debugging App Startup")
-
+# Validate secrets
 try:
-    st.write("Trying to import login module...")
-    from auth.login import login_page
-    st.success("✅ auth.login imported successfully")
-
-    st.write("Trying to import classifier...")
-    from router.classifier import classify_query
-    st.success("✅ router.classifier imported successfully")
-
-    st.write("Trying to import joblib and others...")
-    import joblib
-    import openai
-    import os
-    st.success("✅ All core modules imported")
-
-    st.write("Trying to read secrets...")
-    st.code(f"OPENAI_API_KEY = {st.secrets['OPENAI_API_KEY'][:5]}...")
-    st.success("✅ Secrets loaded")
-
+    key = st.secrets.get("OPENAI_API_KEY", None)
+    st.text(f"OpenAI key loaded: {bool(key)}")
 except Exception as e:
-    st.error("❌ App crashed at startup")
-    st.exception(e)
+    st.error(f"Secrets load error: {e}")
+
+# Validate module imports
+modules = {
+    "auth.login": "from auth.login import login_page",
+    "router.classifier": "from router.classifier import classify_query",
+}
+
+for mod, code in modules.items():
+    try:
+        exec(code, globals())
+        st.success(f"✅ {mod} imported successfully")
+    except Exception as e:
+        st.error(f"❌ {mod} import failed: {e}")
+
+# Test joblib
+try:
+    import joblib
+    st.success("✅ joblib available")
+except Exception as e:
+    st.error(f"❌ joblib import failed: {e}")
