@@ -1,0 +1,22 @@
+# .streamlit/config.toml
+
+[server]
+headless = true
+enableCORS = false
+port = 8501
+enableXsrfProtection = false
+
+[theme]
+base = "light"
+primaryColor = "#4B8BBE"                     # Calm blue
+backgroundColor = "#F5F7FA"                 # Light background
+secondaryBackgroundColor = "#E4E6EB"        # For sidebars / widgets
+textColor = "#262730"
+font = "sans serif"
+
+[client]
+toolbarMode = "minimal"                     # Hide hamburger menu
+showErrorDetails = true
+
+[logger]
+level = "info"
